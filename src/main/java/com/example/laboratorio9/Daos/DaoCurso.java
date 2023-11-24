@@ -96,7 +96,7 @@ public class DaoCurso extends DaoBase{
     }
 
     public void actualizarCurso(int idCurso, String nombreCurso){
-        String sql = "update curso set nombre=? where idcurso=?";
+        String sql = "update curso set nombre=?, fecha_edicion=now() where idcurso=?";
         try(Connection conn = getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setString(1,nombreCurso);

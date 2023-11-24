@@ -49,8 +49,10 @@ public class DaoSemestre extends DaoBase{
             PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setInt(1,idSemestre);
             try(ResultSet rs = pstmt.executeQuery()){
-                semestre.setIdSemestre(rs.getInt(1));
-                semestre.setNombre(rs.getString(2));
+                if(rs.next()) {
+                    semestre.setIdSemestre(rs.getInt(1));
+                    semestre.setNombre(rs.getString(2));
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

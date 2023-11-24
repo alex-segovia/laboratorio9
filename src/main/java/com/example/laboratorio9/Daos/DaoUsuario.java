@@ -148,7 +148,7 @@ public class DaoUsuario extends DaoBase{
     }
 
     public void actualizarNombreDocente(int idDocente, String nombreDocente){
-        String sql = "update usuario set nombre=? where idusuario=?";
+        String sql = "update usuario set nombre=?, fecha_edicion=now() where idusuario=?";
         try(Connection conn = getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setString(1,nombreDocente);

@@ -201,7 +201,36 @@
             outline: none; /* Eliminar el contorno de enfoque */
             box-shadow: 0 0 5px rgba(255, 0, 255, 0.5); /* Sombra al estar enfocado en tono magenta con transparencia */
         }
+        select {
+            padding: 8px; /* Espaciado interno */
+            font-size: 17px; /* Tamaño de la fuente */
+            border: 0 solid black; /* Borde de tono magenta */
+            border-radius: 5px; /* Bordes redondeados */
+            appearance: none; /* Elimina el estilo por defecto del sistema */
+            -webkit-appearance: none; /* Para navegadores basados en WebKit */
+            -moz-appearance: none; /* Para navegadores basados en Gecko (Firefox) */
+            background-color: inherit; /* Fondo en tono magenta */
+            color: #000000; /* Texto en negro */
+            background-image: url('data:image/svg+xml;utf8,<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Icono de flecha personalizado en negro */
+            background-repeat: no-repeat; /* No repetir el icono */
+            background-size: 30px; /* Tamaño del icono */
+            width: 35%; /* Ancho automático basado en el contenido */
+            max-width: 100%; /* Ancho máximo */
+            box-sizing: border-box; /* Incluir padding y border en el ancho total */
+            float: right; /* Alineación a la derecha */
+            text-align: center;
+        }
 
+        /* Estilos al pasar el mouse sobre el ComboBox */
+        select:hover {
+            border-color: #cc00cc; /* Cambio de color del borde al pasar el mouse */
+        }
+
+        /* Estilos cuando el ComboBox está enfocado */
+        select:focus {
+            outline: none; /* Eliminar el contorno de enfoque */
+            box-shadow: 0 0 5px rgba(255, 0, 255, 0.5); /* Sombra al estar enfocado en tono magenta con transparencia */
+        }
     </style>
 </head>
 <body>
@@ -229,9 +258,10 @@
             <div class="col-4 mt-3"><button class="btn btn-secondary" id="mostrarPopupCrear">Registrar evaluación</button></div>
             <div class="col-4 mb-3 mt-2" style="font-size: 45px; font-weight: bold; font-style: italic; color: black; text-align: center">Evaluaciones</div>
             <div class="col-4">
-                <form>
-                    <label for="semestre" style="margin-top: 25px;color: #000000"><b>Semestre</b></label>
-                    <select style="height: 55px;margin-top: 10px;" name="semestre" id="semestre" required>
+                <form method="get" action="<%=request.getContextPath()%>/EvaluacionesServlet">
+                    <input type="hidden" name="action" value="filtro">
+                    <label for="idsemestre" style="margin-top: 25px;color: #000000; margin-left: 250px"><b>Semestre:</b></label>
+                    <select style="height: 55px;margin-top: 10px;" name="idsemestre" id="idsemestre" required>
                         <%for(Semestre semestre : listaSemestres){%>
                         <option style="background-color: rgba(118, 0, 134,0.8); color: whitesmoke" value="<%=semestre.getIdSemestre()%>"><%=semestre.getNombre()%></option>
                         <%}%>

@@ -18,9 +18,16 @@ public class EvaluacionesServlet extends HttpServlet {
         if(request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             DaoEvaluaciones daoEvaluaciones = new DaoEvaluaciones();
-            DaoSemestre daoSemestre = new DaoSemestre();
             DaoUsuario daoUsuario = new DaoUsuario();
-            request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
+            String action = request.getParameter("action")==null?"default":request.getParameter("action");
+            switch (action){
+                case "default":
+                    request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
+                    break;
+                case "filtro":
+                    request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluacionesPorSemestre(usuario.getIdUsuario(),Integer.parseInt(request.getParameter("idsemestre"))));
+                    break;
+            }
             request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
             request.getRequestDispatcher("menuEvaluaciones.jsp").forward(request,response);
         }else{
