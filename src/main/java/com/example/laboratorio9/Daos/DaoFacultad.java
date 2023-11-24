@@ -22,4 +22,21 @@ public class DaoFacultad extends DaoBase{
             throw new RuntimeException(e);
         }
     }
+
+    public int obtenerIdPorIdDecano(int idDecano){
+        String sql = "select idfacultad from facultad_has_decano where iddecano=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idDecano);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt(1);
+                }else{
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

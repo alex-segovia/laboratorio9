@@ -170,6 +170,21 @@ public class DaoUsuario extends DaoBase{
         }
     }
 
+    public void crearDocente(String nombre, String correo, String contrasena){
+        String sql = "insert into usuario (nombre,correo,password,idrol,cantidad_ingresos,fecha_registro) values (?,?,sha2(?,256),?,?,now())";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombre);
+            pstmt.setString(2,correo);
+            pstmt.setString(3,contrasena);
+            pstmt.setInt(4,new DaoRol().obtenerIdPorNombre("Docente"));
+            pstmt.setInt(5,0);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public ArrayList<Usuario> listarDocentesSinCurso(){
         ArrayList<Usuario> listaDocentesSinCurso = new ArrayList<>();
         String sql = "select u.idusuario, u.nombre from usuario u " +

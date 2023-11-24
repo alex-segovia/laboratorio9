@@ -2,6 +2,7 @@ package com.example.laboratorio9.Controllers;
 
 import com.example.laboratorio9.Beans.Usuario;
 import com.example.laboratorio9.Daos.DaoCurso;
+import com.example.laboratorio9.Daos.DaoFacultad;
 import com.example.laboratorio9.Daos.DaoUsuario;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -30,11 +31,19 @@ public class CursoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
         DaoCurso daoCurso = new DaoCurso();
         String action = request.getParameter("action")==null?"crear":request.getParameter("action");
         switch (action) {
             case "crear":
-                //aiuda
+                String nombre = request.getParameter("nombreCurso");
+                String codigo = request.getParameter("codigoCurso");
+                if(!(nombre.isEmpty() || codigo.isEmpty())){
+                    String idDocenteStr = request.getParameter("idDocente");
+                    DaoFacultad daoFacultad = new DaoFacultad();
+                    daoCurso.crearCurso(nombre,codigo,Integer.parseInt(idDocenteStr),daoFacultad.obtenerIdPorIdDecano(usuario.getIdUsuario()));
+                }
+                response.sendRedirect(request.getContextPath() + "/CursoServlet");
                 break;
             case "editar":
                 String nombreCurso = request.getParameter("nombreEditarCurso");

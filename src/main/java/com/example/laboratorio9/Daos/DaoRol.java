@@ -22,4 +22,21 @@ public class DaoRol extends DaoBase{
             throw new RuntimeException(e);
         }
     }
+
+    public int obtenerIdPorNombre(String nombre){
+        String sql = "select idrol from rol where nombre=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombre);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt(1);
+                }else{
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -95,6 +95,46 @@ public class DaoCurso extends DaoBase{
         }
     }
 
+    public void crearCurso(String nombre, String codigo, int idDocente, int idFacultad){
+        String sql = "insert into curso (codigo,nombre,idfacultad,fecha_registro) values (?,?,?,now())";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,codigo);
+            pstmt.setString(2,nombre);
+            pstmt.setInt(3,idFacultad);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        String sql2 = "insert into curso_has_docente (idcurso, iddocente) values (?,?)";
+        try(Connection conn2 = getConnection();
+            PreparedStatement pstmt2 = conn2.prepareStatement(sql2)){
+            pstmt2.setInt(1,obtenerUltimoIdCursoPorFacultad(idFacultad));
+            pstmt2.setInt(2,idDocente);
+            pstmt2.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int obtenerUltimoIdCursoPorFacultad(int idFacultad){
+        String sql = "select idcurso from curso where idfacultad=? order by idcurso desc limit 1";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idFacultad);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt(1);
+                }else{
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void actualizarCurso(int idCurso, String nombreCurso){
         String sql = "update curso set nombre=?, fecha_edicion=now() where idcurso=?";
         try(Connection conn = getConnection();

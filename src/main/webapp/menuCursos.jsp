@@ -226,7 +226,7 @@
 <body>
 <header class="header1">
     <div class="logo mt-1">
-        <h2 style="font-weight: bold;"><a style="text-decoration: none; font-size: 25px; font-weight: inherit; color: inherit" href="<%=request.getContextPath()%>/CursoServlet">Bienvenido, <%=usuario.getNombre()%></a></h2>
+        <h2 style="font-weight: bold; font-size: 25px;">Bienvenido, <%=usuario.getNombre()%></h2>
     </div>
     <div class="logo mt-1">
         <h2 style="font-weight: bold; font-size: 14px">Última hora de ingreso: <%=usuario.getUltimoIngreso()%></h2>
@@ -308,7 +308,7 @@
                         <br>
                         <div class="row">
                             <div class="col">
-                                <label for="nombreCurso" style="margin-top: 25px;color: #000000"><b>Nombre del docente:</b></label>
+                                <label for="nombreCurso" style="margin-top: 25px;color: #000000"><b>Nombre del curso:</b></label>
                                 <input style="margin-top: 15px" type="text" name="nombreCurso" id="nombreCurso" placeholder="Nombre" required>
                             </div>
                         </div>

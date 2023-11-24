@@ -32,7 +32,13 @@ public class DocenteServlet extends HttpServlet {
         String action = request.getParameter("action")==null?"crear":request.getParameter("action");
         switch (action) {
             case "crear":
-                //aiuda
+                String nombre = request.getParameter("nombreDocente");
+                String correo = request.getParameter("correoDocente");
+                String contrasena = request.getParameter("passwdDocente");
+                if(!(nombre.isEmpty() || correo.isEmpty() || contrasena.isEmpty())){
+                    daoUsuario.crearDocente(nombre,correo,contrasena);
+                }
+                response.sendRedirect(request.getContextPath() + "/DocenteServlet");
                 break;
             case "editar":
                 String nombreDocente = request.getParameter("nombreEditarDocente");

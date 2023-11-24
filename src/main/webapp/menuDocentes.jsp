@@ -193,7 +193,7 @@
 <body>
 <header class="header1">
     <div class="logo mt-1">
-        <h2 style="font-weight: bold;"><a style="text-decoration: none; font-size: 25px; font-weight: inherit; color: inherit" href="<%=request.getContextPath()%>/DocenteServlet">Bienvenido, <%=usuario.getNombre()%></a></h2>
+        <h2 style="font-weight: bold; font-size: 25px;">Bienvenido, <%=usuario.getNombre()%></h2>
     </div>
     <div class="logo mt-1">
         <h2 style="font-weight: bold; font-size: 14px">Última hora de ingreso: <%=usuario.getUltimoIngreso()%></h2>
