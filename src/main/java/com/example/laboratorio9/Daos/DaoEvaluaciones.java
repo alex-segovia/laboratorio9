@@ -13,7 +13,10 @@ import java.util.ArrayList;
 public class DaoEvaluaciones extends DaoBase{
     public ArrayList<Evaluaciones> listarEvaluaciones(int idDocente){
         ArrayList<Evaluaciones> listaEvaluaciones = new ArrayList<>();
-        String sql = "select ev.idevaluacion, ev.nombre_estudiante, ev.codigo_estudiante, ev.correo_estudiante, ev.nota, ev.idcurso, ev.idsemestre, ev.fecha_registro, ev.fecha_edicion from evaluacion ev inner join curso c on ev.idcurso = c.idcurso inner join curso_has_docente cd on c.idcurso = cd.idcurso where cd.iddocente=?";
+        String sql = "select ev.idevaluacion, ev.nombre_estudiante, ev.codigo_estudiante, ev.correo_estudiante, ev.nota, ev.idcurso, ev.idsemestre, ev.fecha_registro, ev.fecha_edicion from evaluacion ev " +
+                "inner join curso c on ev.idcurso = c.idcurso " +
+                "inner join curso_has_docente cd on c.idcurso = cd.idcurso " +
+                "where cd.iddocente=?";
         try(Connection conn = getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setInt(1,idDocente);
@@ -48,5 +51,31 @@ public class DaoEvaluaciones extends DaoBase{
             throw new RuntimeException(e);
         }
         return listaEvaluaciones;
+    }
+
+    public void borrarEvaluacion(int idEvaluacion){
+        String sql = "delete from evaluacion where idevaluacion=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idEvaluacion);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void editarEvaluacion(int idEvaluacion, String nombreAlumno, String codigoAlumno, String correoAlumno, int notaAlumno){
+        String sql = "update evaluacion set nombre_estudiante=?, correo_estudiante=?, codigo_estudiante=?, nota=? where idevaluacion=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombreAlumno);
+            pstmt.setString(2,correoAlumno);
+            pstmt.setString(3,codigoAlumno);
+            pstmt.setInt(4,notaAlumno);
+            pstmt.setInt(5,idEvaluacion);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -19,6 +19,7 @@ public class CursoServlet extends HttpServlet {
             DaoCurso daoCurso = new DaoCurso();
             DaoUsuario daoUsuario = new DaoUsuario();
             request.setAttribute("listaCursos",daoCurso.listarCurso(usuario.getIdUsuario()));
+            request.setAttribute("listaDocentesSinCurso",daoUsuario.listarDocentesSinCurso());
             request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
             request.getRequestDispatcher("menuCursos.jsp").forward(request,response);
         }else{
@@ -29,6 +30,28 @@ public class CursoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
+        DaoCurso daoCurso = new DaoCurso();
+        String action = request.getParameter("action")==null?"crear":request.getParameter("action");
+        switch (action) {
+            case "crear":
+                //aiuda
+                break;
+            case "editar":
+                String nombreCurso = request.getParameter("nombreEditarCurso");
+                if (!nombreCurso.isEmpty()) {
+                    int idCurso = Integer.parseInt(request.getParameter("idCurso"));
+                    daoCurso.actualizarCurso(idCurso,nombreCurso);
+                }
+                response.sendRedirect(request.getContextPath() + "/CursoServlet");
+                break;
+            case "borrar":
+                int idCurso = Integer.parseInt(request.getParameter("idCurso"));
+                if(!(daoCurso.cursoConEvaluaciones(idCurso))){
+                    daoCurso.borrarCurso(idCurso);
+                }
+                response.sendRedirect(request.getContextPath() + "/CursoServlet");
+                break;
+        }
     }
 }
 

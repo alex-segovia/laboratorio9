@@ -245,7 +245,12 @@
             <td class="py-3 text-center"><%=d.getFechaRegistro()%></td>
             <td class="py-3 text-center"><%=d.getFechaEdicion()==null?"No se ha editado nunca":d.getFechaEdicion()%></td>
             <td class="py-3 text-center"><button class="btn btn-secondary" id="mostrarPopupEditar<%=listaDocentes.indexOf(d)%>">Editar</button></td>
-            <td class="py-3 text-center"><form method="post" action="<%=request.getContextPath()%>/DocenteServlet?action=borrar"><button class="btn btn-secondary">Borrar</button></form></td>
+            <td class="py-3 text-center">
+                <form method="post" action="<%=request.getContextPath()%>/DocenteServlet?action=borrar">
+                    <input type="hidden" name="idDocente" value="<%=d.getIdUsuario()%>">
+                    <button class="btn btn-secondary" <%if(!(new DaoCurso().obtenerNombreCursoPorDocente(d.getIdUsuario())).equals("Ninguno")){%>disabled<%}%>>Borrar</button>
+                </form>
+            </td>
         </tr>
         <%}%>
         </tbody>

@@ -81,4 +81,49 @@ public class DaoCurso extends DaoBase{
             throw new RuntimeException(e);
         }
     }
+
+    public boolean cursoConEvaluaciones(int idCurso){
+        String sql = "select idevaluacion from evaluacion where idcurso=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idCurso);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void actualizarCurso(int idCurso, String nombreCurso){
+        String sql = "update curso set nombre=? where idcurso=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombreCurso);
+            pstmt.setInt(2,idCurso);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void borrarCurso(int idCurso){
+        String sql = "delete from curso_has_docente where idcurso=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idCurso);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        String sql2 = "delete from curso where idcurso=?";
+        try(Connection conn2 = getConnection();
+            PreparedStatement pstmt2 = conn2.prepareStatement(sql2)){
+            pstmt2.setInt(1,idCurso);
+            pstmt2.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

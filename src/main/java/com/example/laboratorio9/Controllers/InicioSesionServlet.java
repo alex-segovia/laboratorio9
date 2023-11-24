@@ -44,6 +44,7 @@ public class InicioSesionServlet extends HttpServlet {
 
         if(daoUsuario.validarUsuario(correo,password)){
             Usuario usuario = daoUsuario.obtenerUsuario(correo);
+            daoUsuario.actualizarUltimaHoraYCantidadDeIngresos(usuario.getIdUsuario());
             request.getSession().setAttribute("usuario",usuario);
             request.getSession().setMaxInactiveInterval(600);
             if(usuario.getRol().getNombre().equals("Decano")){

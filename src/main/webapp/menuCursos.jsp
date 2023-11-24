@@ -3,6 +3,7 @@
 <%@ page import="com.example.laboratorio9.Beans.Curso" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.laboratorio9.Daos.DaoUsuario" %>
+<%@ page import="com.example.laboratorio9.Daos.DaoCurso" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -10,6 +11,7 @@
     <title>Menú de Cursos</title>
     <%Usuario usuario = (Usuario)request.getSession().getAttribute("usuario");%>
     <%ArrayList<Curso> listaCursos = (ArrayList<Curso>) request.getAttribute("listaCursos");%>
+    <%ArrayList<Usuario> listaDocentesSinCurso = (ArrayList<Usuario>) request.getAttribute("listaDocentesSinCurso");%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;600;700&display=swap');
@@ -144,7 +146,7 @@
         input[type="text"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -160,7 +162,7 @@
         input[type="email"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -176,7 +178,7 @@
         input[type="password"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -192,7 +194,7 @@
         select {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid black; /* Borde de tono magenta */
+            border: 0 solid black; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             appearance: none; /* Elimina el estilo por defecto del sistema */
             -webkit-appearance: none; /* Para navegadores basados en WebKit */
@@ -274,7 +276,12 @@
             <td class="py-3 text-center"><%=c.getFechaRegistro()%></td>
             <td class="py-3 text-center"><%=c.getFechaEdicion()==null?"No se ha editado nunca":c.getFechaEdicion()%></td>
             <td class="py-3 text-center"><button class="btn btn-secondary" id="mostrarPopupEditar<%=listaCursos.indexOf(c)%>">Editar</button></td>
-            <td class="py-3 text-center"><form method="post" action="<%=request.getContextPath()%>/CursoServlet"><button class="btn btn-secondary">Borrar</button></form></td>
+            <td class="py-3 text-center">
+                <form method="post" action="<%=request.getContextPath()%>/CursoServlet">
+                    <input type="hidden" name="idCurso" value="<%=c.getIdCurso()%>">
+                    <button class="btn btn-secondary" <%if(new DaoCurso().cursoConEvaluaciones(c.getIdCurso())){%>disabled<%}%>>Borrar</button>
+                </form>
+            </td>
         </tr>
         <%}%>
         </tbody>
@@ -317,7 +324,9 @@
                             <div class="col">
                                 <label for="docenteCrear" style="margin-top: 25px;color: #000000"><b>Docente a cargo:</b></label>
                                 <select style="height: 55px;margin-top: 10px;" name="docenteCrear" id="docenteCrear" required>
-                                    <option style="background-color: rgba(118, 0, 134,0.8); color: whitesmoke" value=""></option>
+                                    <%for(Usuario docenteSinCurso : listaDocentesSinCurso){%>
+                                    <option style="background-color: rgba(118, 0, 134,0.8); color: whitesmoke" value="<%=docenteSinCurso.getIdUsuario()%>"><%=docenteSinCurso.getNombre()%></option>
+                                    <%}%>
                                 </select>
                             </div>
                         </div>

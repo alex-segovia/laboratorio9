@@ -2,6 +2,9 @@
 <%@ page import="com.example.laboratorio9.Beans.Usuario" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.laboratorio9.Beans.Evaluaciones" %>
+<%@ page import="com.example.laboratorio9.Daos.DaoSemestre" %>
+<%@ page import="com.example.laboratorio9.Beans.Semestre" %>
+<%@ page import="java.util.HashSet" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -9,6 +12,15 @@
     <title>Menú de Evaluaciones</title>
     <%Usuario usuario = (Usuario)request.getSession().getAttribute("usuario");%>
     <%ArrayList<Evaluaciones> listaEvaluaciones = (ArrayList<Evaluaciones>) request.getAttribute("listaEvaluaciones");%>
+    <%ArrayList<Semestre> listaSemestres = new ArrayList<>();
+        HashSet<Integer> idsSemestres = new HashSet<>();%>
+    <%for(Evaluaciones ev : listaEvaluaciones){
+        idsSemestres.add(ev.getSemestre().getIdSemestre());
+    }
+    for(int id : idsSemestres){
+        listaSemestres.add(new DaoSemestre().obtenerSemestrePorId(id));
+    }%>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;600;700&display=swap');
@@ -144,7 +156,7 @@
         input[type="text"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -160,7 +172,7 @@
         input[type="email"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -176,7 +188,7 @@
         input[type="number"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -216,7 +228,16 @@
         <div class="row">
             <div class="col-4 mt-3"><button class="btn btn-secondary" id="mostrarPopupCrear">Registrar evaluación</button></div>
             <div class="col-4 mb-3 mt-2" style="font-size: 45px; font-weight: bold; font-style: italic; color: black; text-align: center">Evaluaciones</div>
-            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <label for="semestre" style="margin-top: 25px;color: #000000"><b>Semestre</b></label>
+                    <select style="height: 55px;margin-top: 10px;" name="semestre" id="semestre" required>
+                        <%for(Semestre semestre : listaSemestres){%>
+                        <option style="background-color: rgba(118, 0, 134,0.8); color: whitesmoke" value="<%=semestre.getIdSemestre()%>"><%=semestre.getNombre()%></option>
+                        <%}%>
+                    </select>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -248,7 +269,13 @@
             <td class="py-3 text-center"><%=ev.getFechaRegistro()%></td>
             <td class="py-3 text-center"><%=ev.getFechaEdicion()==null?"No se ha editado nunca":ev.getFechaEdicion()%></td>
             <td class="py-3 text-center"><button class="btn btn-secondary" id="mostrarPopupEditar<%=listaEvaluaciones.indexOf(ev)%>">Editar</button></td>
-            <td class="py-3 text-center"><form method="post" action="<%=request.getContextPath()%>/EvaluacionesServlet?action=borrar"><button class="btn btn-secondary">Borrar</button></form></td>
+            <td class="py-3 text-center">
+                <form method="post" action="<%=request.getContextPath()%>/EvaluacionesServlet?action=borrar">
+                    <input type="hidden" name="idEvaluacion" value="<%=ev.getIdEvaluaciones()%>">
+                    <input type="hidden" name="idSemestre" value="<%=ev.getSemestre().getIdSemestre()%>">
+                    <button class="btn btn-secondary" <%if(!(new DaoSemestre().semestreHabilitado(ev.getSemestre().getIdSemestre()))){%>disabled<%}%>>Borrar</button>
+                </form>
+            </td>
         </tr>
         <%}%>
         </tbody>
@@ -262,7 +289,7 @@
 <!-- Popup para crear habitante -->
 <div class="overlay" id="overlayCrear"></div>
 <div class="popup contenedorCrear" style="width: 500px;" id="popupCrear">
-    <h5 style="text-align: center; color: #000000; font-size: 25px"><b>Reclutar habitante</b></h5>
+    <h5 style="text-align: center; color: #000000; font-size: 25px"><b>Registrar evaluación</b></h5>
     <svg class="cerrarPopup" id="cerrarPopupCrear" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M11.4142 10L16.7071 4.70711C17.0976 4.31658 17.0976 3.68342 16.7071 3.29289C16.3166 2.90237 15.6834 2.90237 15.2929 3.29289L10 8.58579L4.70711 3.29289C4.31658 2.90237 3.68342 2.90237 3.29289 3.29289C2.90237 3.68342 2.90237 4.31658 3.29289 4.70711L8.58579 10L3.29289 15.2929C2.90237 15.6834 2.90237 16.3166 3.29289 16.7071C3.68342 17.0976 4.31658 17.0976 4.70711 16.7071L10 11.4142L15.2929 16.7071C15.6834 17.0976 16.3166 17.0976 16.7071 16.7071C17.0976 16.3166 17.0976 15.6834 16.7071 15.2929L11.4142 10Z" fill="black"></path>
     </svg>
@@ -328,7 +355,7 @@
 <%for(int i=0;i<listaEvaluaciones.size();i++){%>
 <div class="overlay" id="overlayEditar<%=i%>"></div>
 <div class="popup contenedorCrear" style="width: 500px;" id="popupEditar<%=i%>">
-    <h5 style="text-align: center; color: #000000; font-size: 25px"><b>Editar docente</b></h5>
+    <h5 style="text-align: center; color: #000000; font-size: 25px"><b>Editar evaluación</b></h5>
     <svg class="cerrarPopup" id="cerrarPopupEditar<%=i%>" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M11.4142 10L16.7071 4.70711C17.0976 4.31658 17.0976 3.68342 16.7071 3.29289C16.3166 2.90237 15.6834 2.90237 15.2929 3.29289L10 8.58579L4.70711 3.29289C4.31658 2.90237 3.68342 2.90237 3.29289 3.29289C2.90237 3.68342 2.90237 4.31658 3.29289 4.70711L8.58579 10L3.29289 15.2929C2.90237 15.6834 2.90237 16.3166 3.29289 16.7071C3.68342 17.0976 4.31658 17.0976 4.70711 16.7071L10 11.4142L15.2929 16.7071C15.6834 17.0976 16.3166 17.0976 16.7071 16.7071C17.0976 16.3166 17.0976 15.6834 16.7071 15.2929L11.4142 10Z" fill="black"/>
     </svg>

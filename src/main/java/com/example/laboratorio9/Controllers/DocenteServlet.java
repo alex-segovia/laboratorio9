@@ -28,6 +28,28 @@ public class DocenteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
+        DaoUsuario daoUsuario = new DaoUsuario();
+        String action = request.getParameter("action")==null?"crear":request.getParameter("action");
+        switch (action) {
+            case "crear":
+                //aiuda
+                break;
+            case "editar":
+                String nombreDocente = request.getParameter("nombreEditarDocente");
+                if (!nombreDocente.isEmpty()) {
+                    int idDocente = Integer.parseInt(request.getParameter("idDocente"));
+                    daoUsuario.actualizarNombreDocente(idDocente, nombreDocente);
+                }
+                response.sendRedirect(request.getContextPath() + "/DocenteServlet");
+                break;
+            case "borrar":
+                int idDocente = Integer.parseInt(request.getParameter("idDocente"));
+                if((new DaoCurso().obtenerNombreCursoPorDocente(idDocente)).equals("Ninguno")){
+                    daoUsuario.borrarDocente(idDocente);
+                }
+                response.sendRedirect(request.getContextPath() + "/DocenteServlet");
+                break;
+        }
     }
 }
 

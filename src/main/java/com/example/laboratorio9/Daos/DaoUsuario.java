@@ -135,4 +135,57 @@ public class DaoUsuario extends DaoBase{
         usuario.setFechaRegistro(rs.getString(7));
         usuario.setFechaEdicion(rs.getString(8));
     }
+
+    public void actualizarUltimaHoraYCantidadDeIngresos(int idUsuario){
+        String sql = "update usuario set ultimo_ingreso=now(), cantidad_ingresos=cantidad_ingresos+1 where idusuario=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idUsuario);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void actualizarNombreDocente(int idDocente, String nombreDocente){
+        String sql = "update usuario set nombre=? where idusuario=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombreDocente);
+            pstmt.setInt(2,idDocente);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void borrarDocente(int idUsuario){
+        String sql = "delete from usuario where idusuario=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idUsuario);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<Usuario> listarDocentesSinCurso(){
+        ArrayList<Usuario> listaDocentesSinCurso = new ArrayList<>();
+        String sql = "select u.idusuario, u.nombre from usuario u " +
+                "inner join rol r on u.idrol = r.idrol " +
+                "where r.nombre='Docente' and u.idusuario not in (select iddocente from curso_has_docente)";
+        try(Connection conn = getConnection();
+            ResultSet rs = conn.prepareStatement(sql).executeQuery()){
+            while(rs.next()){
+                Usuario usuario = new Usuario();
+                usuario.setIdUsuario(rs.getInt(1));
+                usuario.setNombre(rs.getString(2));
+                listaDocentesSinCurso.add(usuario);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return listaDocentesSinCurso;
+    }
 }
