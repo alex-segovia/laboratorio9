@@ -73,9 +73,10 @@
             background-color: transparent;
             border: none;
             outline: none;
-            font-size: 1rem;
+            font-size: 0.85rem;
             padding: -35px 0 5px;
             color: white;
+            font-weight: bold;
         }
 
         .input-contenedor i{
