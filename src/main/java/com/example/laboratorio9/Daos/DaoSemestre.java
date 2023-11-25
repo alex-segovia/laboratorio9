@@ -82,4 +82,17 @@ public class DaoSemestre extends DaoBase{
             throw new RuntimeException(e);
         }
     }
+
+    public boolean idExiste(int idSemestre){
+        String sql = "select idsemestre from semestre where idsemestre=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idSemestre);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

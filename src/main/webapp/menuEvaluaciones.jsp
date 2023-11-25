@@ -275,9 +275,17 @@
         </div>
     </div>
 
+    <%if(request.getSession().getAttribute("creacionExitosa")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("creacionExitosa")%></div></div>
+        <%request.getSession().removeAttribute("creacionExitosa");%>
+    <%}%>
     <%if(request.getSession().getAttribute("errorCreacion")!=null){%>
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorCreacion")%></div></div>
         <%request.getSession().removeAttribute("errorCreacion");%>
+    <%}%>
+    <%if(request.getSession().getAttribute("edicionExitosa")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("edicionExitosa")%></div></div>
+        <%request.getSession().removeAttribute("edicionExitosa");%>
     <%}%>
     <%if(request.getSession().getAttribute("errorEdicion")!=null){%>
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorEdicion")%></div></div>

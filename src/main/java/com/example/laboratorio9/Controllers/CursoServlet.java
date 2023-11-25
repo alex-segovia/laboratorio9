@@ -33,30 +33,108 @@ public class CursoServlet extends HttpServlet {
         response.setContentType("text/html");
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
         DaoCurso daoCurso = new DaoCurso();
+        DaoUsuario daoUsuario = new DaoUsuario();
+        DaoFacultad daoFacultad = new DaoFacultad();
         String action = request.getParameter("action")==null?"crear":request.getParameter("action");
         switch (action) {
             case "crear":
                 String nombre = request.getParameter("nombreCurso");
                 String codigo = request.getParameter("codigoCurso");
-                if(!(nombre.isEmpty() || codigo.isEmpty())){
-                    String idDocenteStr = request.getParameter("idDocente");
-                    DaoFacultad daoFacultad = new DaoFacultad();
+                String idDocenteStr = request.getParameter("idDocente");
+
+                boolean cursoValido = true;
+                if(nombre==null || codigo==null || idDocenteStr==null){
+                    cursoValido=false;
+                }else{
+                    if(nombre.isEmpty()){
+                        cursoValido=false;
+                    }
+                    if(codigo.isEmpty()){
+                        cursoValido=false;
+                    }
+                    if(nombre.length()>45){
+                        cursoValido=false;
+                    }
+                    if(codigo.length()>6){
+                        cursoValido=false;
+                    }
+                    try{
+                        int idDocente  = Integer.parseInt(idDocenteStr);
+                        if(!daoUsuario.idExiste(idDocente)){
+                            cursoValido=false;
+                        }
+                    }catch (NumberFormatException ex){
+                        cursoValido=false;
+                    }
+                }
+
+                if(cursoValido){
                     daoCurso.crearCurso(nombre,codigo,Integer.parseInt(idDocenteStr),daoFacultad.obtenerIdPorIdDecano(usuario.getIdUsuario()));
+                    request.getSession().setAttribute("creacionExitosa","El curso se registró exitosamente.");
+                }else{
+                    request.getSession().setAttribute("errorCreacion","Ingrese los datos correctamente. El nombre no debe ser mayor a 45 caracteres, el código no debe ser mayor a 6 caracteres y el docente debe estar registrado en la base de datos.");
                 }
                 response.sendRedirect(request.getContextPath() + "/CursoServlet");
                 break;
             case "editar":
                 String nombreCurso = request.getParameter("nombreEditarCurso");
-                if (!nombreCurso.isEmpty()) {
+                String idCursoStr = request.getParameter("idCurso");
+
+                boolean edicionValida = true;
+                if(nombreCurso==null || idCursoStr==null){
+                    edicionValida=false;
+                }else{
+                    if(nombreCurso.isEmpty()){
+                        edicionValida=false;
+                    }
+                    if(nombreCurso.length()>45){
+                        edicionValida=false;
+                    }
+                    try{
+                        int idCurso = Integer.parseInt(idCursoStr);
+                        if(!daoCurso.idExiste(idCurso)){
+                            edicionValida=false;
+                        }
+                    }catch (NumberFormatException ex){
+                        edicionValida=false;
+                    }
+                }
+
+                if (edicionValida) {
                     int idCurso = Integer.parseInt(request.getParameter("idCurso"));
                     daoCurso.actualizarCurso(idCurso,nombreCurso);
+                    request.getSession().setAttribute("edicionExitosa","El curso se editó exitosamente.");
+                }else{
+                    request.getSession().setAttribute("errorEdicion","Ingrese los datos correctamente. El nombre no debe ser mayor a 45 caracteres y el curso debe estar registrado en la base de datos.");
                 }
                 response.sendRedirect(request.getContextPath() + "/CursoServlet");
                 break;
             case "borrar":
-                int idCurso = Integer.parseInt(request.getParameter("idCurso"));
-                if(!(daoCurso.cursoConEvaluaciones(idCurso))){
+                String idCursoStr2 = request.getParameter("idCurso");
+
+                boolean borradoValido = true;
+                if(idCursoStr2==null){
+                    borradoValido=false;
+                }else{
+                    try{
+                        int idCurso = Integer.parseInt(idCursoStr2);
+                        if(!daoCurso.idExiste(idCurso)){
+                            borradoValido=false;
+                        }
+                        if(daoCurso.cursoConEvaluaciones(idCurso)){
+                            borradoValido=false;
+                        }
+                    }catch (NumberFormatException ex){
+                        borradoValido=false;
+                    }
+                }
+
+                if(borradoValido){
+                    int idCurso = Integer.parseInt(request.getParameter("idCurso"));
                     daoCurso.borrarCurso(idCurso);
+                    request.getSession().setAttribute("borradoExitoso","El curso se borró exitosamente.");
+                }else{
+                    request.getSession().setAttribute("errorBorrado","Este curso no puede borrarse.");
                 }
                 response.sendRedirect(request.getContextPath() + "/CursoServlet");
                 break;

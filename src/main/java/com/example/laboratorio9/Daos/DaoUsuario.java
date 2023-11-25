@@ -170,6 +170,19 @@ public class DaoUsuario extends DaoBase{
         }
     }
 
+    public boolean idExiste(int idUsuario){
+        String sql = "select idusuario from usuario where idusuario=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idUsuario);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void crearDocente(String nombre, String correo, String contrasena){
         String sql = "insert into usuario (nombre,correo,password,idrol,cantidad_ingresos,fecha_registro) values (?,?,sha2(?,256),?,?,now())";
         try(Connection conn = getConnection();

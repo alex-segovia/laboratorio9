@@ -82,6 +82,19 @@ public class DaoCurso extends DaoBase{
         }
     }
 
+    public boolean idExiste(int idCurso){
+        String sql = "select idcurso from curso where idCurso=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idCurso);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public int obtenerIdCursoPorDocente(int idDocente){
         String sql = "select c.idcurso from curso c " +
                 "inner join curso_has_docente cd on c.idcurso = cd.idcurso " +

@@ -120,4 +120,17 @@ public class DaoEvaluaciones extends DaoBase{
             throw new RuntimeException(e);
         }
     }
+
+    public boolean idExiste(int idEvaluacion){
+        String sql = "select idevaluacion from evaluacion where idevaluacion=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idEvaluacion);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
