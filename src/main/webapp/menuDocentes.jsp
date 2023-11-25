@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú de Docentes</title>
+    <link rel="icon" href="iconoInicio.ico">
     <%Usuario usuario = (Usuario)request.getSession().getAttribute("usuario");%>
     <%ArrayList<Usuario> listaDocentes = (ArrayList<Usuario>) request.getAttribute("listaDocentes");%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -240,7 +241,7 @@
             <td class="py-3 text-center"><%=d.getNombre()%></td>
             <td class="py-3 text-center"><%=d.getCorreo()%></td>
             <td class="py-3 text-center"><%=new DaoCurso().obtenerNombreCursoPorDocente(d.getIdUsuario())%></td>
-            <td class="py-3 text-center"><%=d.getUltimoIngreso()%></td>
+            <td class="py-3 text-center"><%=d.getUltimoIngreso()==null?"No ha ingresado nunca":d.getUltimoIngreso()%></td>
             <td class="py-3 text-center"><%=d.getCantidadIngresos()%></td>
             <td class="py-3 text-center"><%=d.getFechaRegistro()%></td>
             <td class="py-3 text-center"><%=d.getFechaEdicion()==null?"No se ha editado nunca":d.getFechaEdicion()%></td>

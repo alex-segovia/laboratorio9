@@ -5,10 +5,12 @@
 <%@ page import="com.example.laboratorio9.Daos.DaoSemestre" %>
 <%@ page import="com.example.laboratorio9.Beans.Semestre" %>
 <%@ page import="java.util.HashSet" %>
+<%@ page import="com.example.laboratorio9.Daos.DaoCurso" %>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="iconoInicio.ico">
     <title>Menú de Evaluaciones</title>
     <%Usuario usuario = (Usuario)request.getSession().getAttribute("usuario");%>
     <%ArrayList<Evaluaciones> listaEvaluaciones = (ArrayList<Evaluaciones>) request.getAttribute("listaEvaluaciones");%>
@@ -223,13 +225,13 @@
 
         /* Estilos al pasar el mouse sobre el ComboBox */
         select:hover {
-            border-color: #cc00cc; /* Cambio de color del borde al pasar el mouse */
+            border-color: #bebc69; /* Cambio de color del borde al pasar el mouse */
         }
 
         /* Estilos cuando el ComboBox está enfocado */
         select:focus {
             outline: none; /* Eliminar el contorno de enfoque */
-            box-shadow: 0 0 5px rgba(255, 0, 255, 0.5); /* Sombra al estar enfocado en tono magenta con transparencia */
+            box-shadow: 0 0 5px rgba(190, 180, 105, 0.5); /* Sombra al estar enfocado en tono magenta con transparencia */
         }
     </style>
 </head>
@@ -252,24 +254,43 @@
     <a href="<%=request.getContextPath()%>?action=logOut" class="btn1"><button>Cerrar Sesión</button></a>
 </header>
 <div class="container-fluid mt-5" style="max-width: 180vh; font-family: 'Roboto',sans-serif !important;">
-
+    <%if(!(new DaoCurso().obtenerNombreCursoPorDocente(usuario.getIdUsuario()).equals("Ninguno"))){%>
     <div class="container-fluid">
         <div class="row">
             <div class="col-4 mt-3"><button class="btn btn-secondary" id="mostrarPopupCrear">Registrar evaluación</button></div>
             <div class="col-4 mb-3 mt-2" style="font-size: 45px; font-weight: bold; font-style: italic; color: black; text-align: center">Evaluaciones</div>
             <div class="col-4">
+                <%if(!listaEvaluaciones.isEmpty()){%>
                 <form method="get" action="<%=request.getContextPath()%>/EvaluacionesServlet">
                     <input type="hidden" name="action" value="filtro">
-                    <label for="idsemestre" style="margin-top: 25px;color: #000000; margin-left: 250px"><b>Semestre:</b></label>
+                    <label for="idsemestre" style="margin-top: 25px;color: #000000; margin-left: 250px;"><b>Semestre:</b></label>
                     <select style="height: 55px;margin-top: 10px;" name="idsemestre" id="idsemestre" required>
                         <%for(Semestre semestre : listaSemestres){%>
-                        <option style="background-color: rgba(118, 0, 134,0.8); color: whitesmoke" value="<%=semestre.getIdSemestre()%>"><%=semestre.getNombre()%></option>
+                        <option style="background-color: rgba(218,227,189,0.8); color: #000000;" value="<%=semestre.getIdSemestre()%>"><%=semestre.getNombre()%></option>
                         <%}%>
                     </select>
                 </form>
+                <%}%>
             </div>
         </div>
     </div>
+
+    <%if(request.getSession().getAttribute("errorCreacion")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorCreacion")%></div></div>
+        <%request.getSession().removeAttribute("errorCreacion");%>
+    <%}%>
+    <%if(request.getSession().getAttribute("errorEdicion")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorEdicion")%></div></div>
+        <%request.getSession().removeAttribute("errorEdicion");%>
+    <%}%>
+    <%if(request.getSession().getAttribute("borradoExitoso")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("borradoExitoso")%></div></div>
+        <%request.getSession().removeAttribute("borradoExitoso");%>
+    <%}%>
+    <%if(request.getSession().getAttribute("errorBorrado")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorBorrado")%></div></div>
+        <%request.getSession().removeAttribute("errorBorrado");%>
+    <%}%>
 
     <table class="table table-striped align-middle caption-top mt-3">
         <%if(!listaEvaluaciones.isEmpty()){%>
@@ -310,9 +331,18 @@
         <%}%>
         </tbody>
         <%}else{%>
-        <div>No hay evaluaciones registradas</div>
+        <div style="font-size: 30px; text-align: center; margin-top: 15px">No hay evaluaciones registradas</div>
         <%}%>
     </table>
+    <%}else{%>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8 mb-3 mt-2" style="font-size: 45px; font-weight: bold; font-style: italic; color: black; text-align: center">No tienes a tu cargo ningún curso, así que no puedes registrar ninguna evaluación. Vuelve cuando un decano te contrate en algún curso.</div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+    <%}%>
 </div>
 
 

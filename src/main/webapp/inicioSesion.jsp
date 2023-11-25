@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/a2dd6045c4.js" crossorigin="anonymous"></script>
     <title>Inicio de Sesión</title>
+    <link rel="icon" href="iconoInicio.ico">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;600;700&display=swap');
         *{

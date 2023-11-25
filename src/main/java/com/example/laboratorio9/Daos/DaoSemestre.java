@@ -59,4 +59,27 @@ public class DaoSemestre extends DaoBase{
         }
         return semestre;
     }
+
+    public int obtenerIdSemestreHabilitadoPorAdministradorPorIdDocente(int idDocente){
+        String sql = "select s.idsemestre from semestre s " +
+                "inner join usuario a on a.idusuario=s.idadmistrador " +
+                "inner join universidad u on u.idadministrador=a.idusuario " +
+                "inner join facultad f on f.iduniversidad=u.iduniversidad " +
+                "inner join curso c on c.idfacultad=f.idfacultad " +
+                "inner join curso_has_docente cd on cd.idcurso=c.idcurso " +
+                "where cd.iddocente=? and s.habilitado=true;\n";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,idDocente);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt(1);
+                }else{
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

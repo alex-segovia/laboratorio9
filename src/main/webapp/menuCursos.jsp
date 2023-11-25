@@ -9,6 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú de Cursos</title>
+    <link rel="icon" href="iconoInicio.ico">
     <%Usuario usuario = (Usuario)request.getSession().getAttribute("usuario");%>
     <%ArrayList<Curso> listaCursos = (ArrayList<Curso>) request.getAttribute("listaCursos");%>
     <%ArrayList<Usuario> listaDocentesSinCurso = (ArrayList<Usuario>) request.getAttribute("listaDocentesSinCurso");%>
@@ -213,13 +214,13 @@
 
         /* Estilos al pasar el mouse sobre el ComboBox */
         select:hover {
-            border-color: #cc00cc; /* Cambio de color del borde al pasar el mouse */
+            border-color: #bebc69; /* Cambio de color del borde al pasar el mouse */
         }
 
         /* Estilos cuando el ComboBox está enfocado */
         select:focus {
             outline: none; /* Eliminar el contorno de enfoque */
-            box-shadow: 0 0 5px rgba(255, 0, 255, 0.5); /* Sombra al estar enfocado en tono magenta con transparencia */
+            box-shadow: 0 0 5px rgba(190, 188, 105, 0.5); /* Sombra al estar enfocado en tono magenta con transparencia */
         }
     </style>
 </head>
@@ -316,16 +317,16 @@
                         <div class="row">
                             <div class="col">
                                 <label for="codigoCurso" style="margin-top: 25px;color: #000000"><b>Código del curso:</b></label>
-                                <input style="margin-top: 15px" type="text" name="codigoCurso" id="codigoCurso" placeholder="codigo" required>
+                                <input style="margin-top: 15px" type="text" name="codigoCurso" id="codigoCurso" placeholder="Código" required>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col">
-                                <label for="docenteCrear" style="margin-top: 25px;color: #000000"><b>Docente a cargo:</b></label>
-                                <select style="height: 55px;margin-top: 10px;" name="docenteCrear" id="docenteCrear" required>
+                                <label for="idDocente" style="margin-top: 25px;color: #000000"><b>Docente a cargo:</b></label>
+                                <select style="height: 55px;margin-top: 10px;" name="idDocente" id="idDocente" required>
                                     <%for(Usuario docenteSinCurso : listaDocentesSinCurso){%>
-                                    <option style="background-color: rgba(118, 0, 134,0.8); color: whitesmoke" value="<%=docenteSinCurso.getIdUsuario()%>"><%=docenteSinCurso.getNombre()%></option>
+                                    <option style="background-color: rgba(218,227,189,0.8); color: #000000" value="<%=docenteSinCurso.getIdUsuario()%>"><%=docenteSinCurso.getNombre()%></option>
                                     <%}%>
                                 </select>
                             </div>

@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DaoEvaluaciones extends DaoBase{
-    public ArrayList<Evaluaciones> listarEvaluaciones(int idDocente){
+    public ArrayList<Evaluaciones>listarEvaluaciones(int idDocente){
         ArrayList<Evaluaciones> listaEvaluaciones = new ArrayList<>();
         String sql = "select ev.idevaluacion, ev.nombre_estudiante, ev.codigo_estudiante, ev.correo_estudiante, ev.nota, ev.idcurso, ev.idsemestre, ev.fecha_registro, ev.fecha_edicion from evaluacion ev " +
                 "inner join curso c on ev.idcurso = c.idcurso " +
@@ -99,6 +99,22 @@ public class DaoEvaluaciones extends DaoBase{
             pstmt.setString(3,codigoAlumno);
             pstmt.setInt(4,notaAlumno);
             pstmt.setInt(5,idEvaluacion);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void crearEvaluacion(String nombre, String correo, String codigo, int nota, int idCurso, int idSemestre){
+        String sql = "insert into evaluacion (nombre_estudiante,codigo_estudiante,correo_estudiante,nota,idcurso,idsemestre,fecha_registro) values (?,?,?,?,?,?,now())";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombre);
+            pstmt.setString(2,codigo);
+            pstmt.setString(3,correo);
+            pstmt.setInt(4,nota);
+            pstmt.setInt(5,idCurso);
+            pstmt.setInt(6,idSemestre);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
