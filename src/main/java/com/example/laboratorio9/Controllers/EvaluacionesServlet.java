@@ -20,13 +20,34 @@ public class EvaluacionesServlet extends HttpServlet {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             DaoEvaluaciones daoEvaluaciones = new DaoEvaluaciones();
             DaoUsuario daoUsuario = new DaoUsuario();
+            DaoSemestre daoSemestre = new DaoSemestre();
             String action = request.getParameter("action")==null?"default":request.getParameter("action");
             switch (action){
                 case "default":
                     request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
                     break;
                 case "filtro":
-                    request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluacionesPorSemestre(usuario.getIdUsuario(),Integer.parseInt(request.getParameter("idsemestre"))));
+                    String idSemestreStr = request.getParameter("idsemestre");
+
+                    boolean validacion=true;
+                    if(idSemestreStr==null){
+                        validacion=false;
+                    }else{
+                        try{
+                            int idSemestre = Integer.parseInt(request.getParameter("idsemestre"));
+                            if(!daoSemestre.idExiste(idSemestre)){
+                                validacion=false;
+                            }
+                        }catch (NumberFormatException ex){
+                            validacion=false;
+                        }
+                    }
+
+                    if(validacion){
+                        request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluacionesPorSemestre(usuario.getIdUsuario(),Integer.parseInt(request.getParameter("idsemestre"))));
+                    }else{
+                        request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
+                    }
                     break;
             }
             request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));

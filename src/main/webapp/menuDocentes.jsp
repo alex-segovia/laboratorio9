@@ -144,7 +144,7 @@
         input[type="text"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -160,7 +160,7 @@
         input[type="email"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */
@@ -176,7 +176,7 @@
         input[type="password"] {
             padding: 8px; /* Espaciado interno */
             font-size: 17px; /* Tamaño de la fuente */
-            border: 0px solid #ff00ff; /* Borde de tono magenta */
+            border: 0 solid #ff00ff; /* Borde de tono magenta */
             border-radius: 5px; /* Bordes redondeados */
             background-color: inherit; /* Fondo en tono magenta */
             color: #ec6090; /* Texto en negro */

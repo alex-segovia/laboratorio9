@@ -19,7 +19,7 @@ public class InicioSesionServlet extends HttpServlet {
                 if(request.getSession().getAttribute("usuario")!=null){
                     if(((Usuario)request.getSession().getAttribute("usuario")).getRol().getNombre().equals("Decano")){
                         response.sendRedirect(request.getContextPath()+"/CursoServlet");
-                    }else{
+                    }else if(((Usuario)request.getSession().getAttribute("usuario")).getRol().getNombre().equals("Docente")){
                         response.sendRedirect(request.getContextPath()+"/EvaluacionesServlet");
                     }
                 }else{
@@ -29,7 +29,7 @@ public class InicioSesionServlet extends HttpServlet {
             case "logOut":
                 request.getSession().removeAttribute("usuario");
                 request.getSession().invalidate();
-                request.getRequestDispatcher("inicioSesion.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath());
                 break;
         }
     }
@@ -37,22 +37,47 @@ public class InicioSesionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
+        DaoUsuario daoUsuario = new DaoUsuario();
+
         String correo = request.getParameter("correo");
         String password = request.getParameter("password");
 
-        DaoUsuario daoUsuario = new DaoUsuario();
+        boolean logInValido = true;
+        if(correo==null || password==null){
+            logInValido=false;
+        }else{
+            if(correo.isEmpty()){
+                logInValido=false;
+            }
+            if(password.isEmpty()){
+                logInValido=false;
+            }
+            if(correo.length()>45){
+                logInValido=false;
+            }
+            if(!daoUsuario.validarUsuario(correo,password)){
+                logInValido=false;
+            }
+        }
 
-        if(daoUsuario.validarUsuario(correo,password)){
+        if(logInValido){
             Usuario usuario = daoUsuario.obtenerUsuario(correo);
-            daoUsuario.actualizarUltimaHoraYCantidadDeIngresos(usuario.getIdUsuario());
-            request.getSession().setAttribute("usuario",usuario);
-            request.getSession().setMaxInactiveInterval(600);
             if(usuario.getRol().getNombre().equals("Decano")){
+                daoUsuario.actualizarUltimaHoraYCantidadDeIngresos(usuario.getIdUsuario());
+                request.getSession().setAttribute("usuario",usuario);
+                request.getSession().setMaxInactiveInterval(600);
                 response.sendRedirect(request.getContextPath()+"/CursoServlet");
-            }else{
+            }else if(usuario.getRol().getNombre().equals("Docente")){
+                daoUsuario.actualizarUltimaHoraYCantidadDeIngresos(usuario.getIdUsuario());
+                request.getSession().setAttribute("usuario",usuario);
+                request.getSession().setMaxInactiveInterval(600);
                 response.sendRedirect(request.getContextPath()+"/EvaluacionesServlet");
+            }else{
+                request.setAttribute("rol",usuario.getRol().getNombre());
+                request.getRequestDispatcher("vistaError.jsp").forward(request, response);
             }
         }else{
+            request.getSession().setAttribute("errorLogIn",0);
             response.sendRedirect(request.getContextPath());
         }
     }

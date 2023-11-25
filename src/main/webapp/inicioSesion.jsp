@@ -112,15 +112,20 @@
                     <h2>Iniciar Sesión</h2>
                     <div class="input-contenedor">
                         <i class="fa-solid fa-envelope"></i>
-                        <input id="correo" type="email" name="correo" >
+                        <input id="correo" type="email" name="correo">
                         <label for="correo">Email</label>
                     </div>
 
                     <div class="input-contenedor">
                         <i class="fa-solid fa-lock"></i>
-                        <input id="password" type="password" name="password" >
+                        <input id="password" type="password" name="password">
                         <label for="password">Contraseña</label>
                     </div>
+
+                    <%if(request.getSession().getAttribute("errorLogIn")!=null){%>
+                        <p style="color: white; font-size: 1rem">Credenciales incorrectas</p>
+                        <%request.getSession().removeAttribute("errorLogIn");%>
+                    <%}%>
 
                     <div>
                         <button type="submit">Acceder</button>
