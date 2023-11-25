@@ -92,8 +92,13 @@ public class DocenteServlet extends HttpServlet {
 
                 if (edicionValida) {
                     int idDocente = Integer.parseInt(request.getParameter("idDocente"));
-                    daoUsuario.actualizarNombreDocente(idDocente, nombreDocente);
-                    request.getSession().setAttribute("edicionExitosa","El docente se editó exitosamente.");
+
+                    if(daoUsuario.verificarDatosRepetidos(nombreDocente,idDocente)){
+                        daoUsuario.actualizarNombreDocente(idDocente, nombreDocente);
+                        request.getSession().setAttribute("edicionExitosa","El docente se editó exitosamente.");
+                    }else{
+                        request.getSession().setAttribute("datosRepetidos","Ingresó datos repetidos. No se realizó ninguna edición.");
+                    }
                 }else{
                     request.getSession().setAttribute("errorEdicion","Ingrese los datos correctamente. El nombre no debe ser mayor a 45 caracteres y el docente debe estar registrado en la base de datos.");
                 }
@@ -118,6 +123,7 @@ public class DocenteServlet extends HttpServlet {
 
                 if(borradoValido){
                     int idDocente = Integer.parseInt(request.getParameter("idDocente"));
+
                     daoUsuario.borrarDocente(idDocente);
                     request.getSession().setAttribute("borradoExitoso","El docente se borró exitosamente.");
                 }else{

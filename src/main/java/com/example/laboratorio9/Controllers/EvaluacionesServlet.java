@@ -45,11 +45,13 @@ public class EvaluacionesServlet extends HttpServlet {
 
                     if(validacion){
                         request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluacionesPorSemestre(usuario.getIdUsuario(),Integer.parseInt(request.getParameter("idsemestre"))));
+                        request.setAttribute("semestreSeleccionado",Integer.parseInt(idSemestreStr));
                     }else{
                         request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
                     }
                     break;
             }
+            request.setAttribute("listaEvaluacionesTotal",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
             request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
             request.getRequestDispatcher("menuEvaluaciones.jsp").forward(request,response);
         }else{
@@ -163,8 +165,12 @@ public class EvaluacionesServlet extends HttpServlet {
 
                 if(edicionValida){
                     int idEvaluacion = Integer.parseInt(request.getParameter("idEvaluacion"));
-                    daoEvaluaciones.editarEvaluacion(idEvaluacion,nombreAlumno,codigoAlumno,correoAlumno,Integer.parseInt(notaAlumno));
-                    request.getSession().setAttribute("edicionExitosa","La evaluación se editó exitosamente.");
+                    if(!daoEvaluaciones.verificarDatosRepetidos(nombreAlumno,correoAlumno,codigoAlumno,Integer.parseInt(notaAlumno),idEvaluacion)){
+                        daoEvaluaciones.editarEvaluacion(idEvaluacion,nombreAlumno,codigoAlumno,correoAlumno,Integer.parseInt(notaAlumno));
+                        request.getSession().setAttribute("edicionExitosa","La evaluación se editó exitosamente.");
+                    }else{
+                        request.getSession().setAttribute("datosRepetidos","Ingresó datos repetidos. No se realizó ninguna edición.");
+                    }
                 }else{
                     request.getSession().setAttribute("errorEdicion","Ingrese los datos correctamente. El nombre, el correo y el código del estudiante no deben tener más de 45 caracteres. Además, la nota debe ser un número entero y la evaluación debe estar registrada en base de datos.");
                 }

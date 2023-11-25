@@ -232,6 +232,10 @@
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("edicionExitosa")%></div></div>
         <%request.getSession().removeAttribute("edicionExitosa");%>
     <%}%>
+    <%if(request.getSession().getAttribute("datosRepetidos")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("datosRepetidos")%></div></div>
+        <%request.getSession().removeAttribute("datosRepetidos");%>
+    <%}%>
     <%if(request.getSession().getAttribute("errorEdicion")!=null){%>
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorEdicion")%></div></div>
         <%request.getSession().removeAttribute("errorEdicion");%>
@@ -274,7 +278,7 @@
             <td class="py-3 text-center">
                 <form method="post" action="<%=request.getContextPath()%>/DocenteServlet?action=borrar">
                     <input type="hidden" name="idDocente" value="<%=d.getIdUsuario()%>">
-                    <button class="btn btn-secondary" <%if(!(new DaoCurso().obtenerNombreCursoPorDocente(d.getIdUsuario())).equals("Ninguno")){%>disabled<%}%>>Borrar</button>
+                    <button type="submit" class="btn btn-secondary" <%if(!(new DaoCurso().obtenerNombreCursoPorDocente(d.getIdUsuario())).equals("Ninguno")){%>disabled<%}%>>Borrar</button>
                 </form>
             </td>
         </tr>

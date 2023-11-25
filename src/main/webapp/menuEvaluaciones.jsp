@@ -14,9 +14,11 @@
     <title>Menú de Evaluaciones</title>
     <%Usuario usuario = (Usuario)request.getSession().getAttribute("usuario");%>
     <%ArrayList<Evaluaciones> listaEvaluaciones = (ArrayList<Evaluaciones>) request.getAttribute("listaEvaluaciones");%>
+    <%ArrayList<Evaluaciones> listaEvaluacionesTotal = (ArrayList<Evaluaciones>) request.getAttribute("listaEvaluacionesTotal");%>
+    <%int idSemestreSeleccionado = request.getAttribute("semestreSeleccionado")==null?0:(int) request.getAttribute("semestreSeleccionado");%>
     <%ArrayList<Semestre> listaSemestres = new ArrayList<>();
         HashSet<Integer> idsSemestres = new HashSet<>();%>
-    <%for(Evaluaciones ev : listaEvaluaciones){
+    <%for(Evaluaciones ev : listaEvaluacionesTotal){
         idsSemestres.add(ev.getSemestre().getIdSemestre());
     }
     for(int id : idsSemestres){
@@ -261,14 +263,16 @@
             <div class="col-4 mb-3 mt-2" style="font-size: 45px; font-weight: bold; font-style: italic; color: black; text-align: center">Evaluaciones</div>
             <div class="col-4">
                 <%if(!listaEvaluaciones.isEmpty()){%>
-                <form method="get" action="<%=request.getContextPath()%>/EvaluacionesServlet">
+                <form style="display: flex; justify-content: center; align-items: center; margin-top: 10px" method="get" action="<%=request.getContextPath()%>/EvaluacionesServlet">
                     <input type="hidden" name="action" value="filtro">
-                    <label for="idsemestre" style="margin-top: 25px;color: #000000; margin-left: 250px;"><b>Semestre:</b></label>
-                    <select style="height: 55px;margin-top: 10px;" name="idsemestre" id="idsemestre" required>
+                    <label for="idsemestre" style="color: #000000;"><b>Semestre:</b></label>
+                    <select style="height: 55px;" name="idsemestre" id="idsemestre" required>
+                        <option style="background-color: rgba(218,227,189,0.8); color: #000000;" value="0">Todos</option>
                         <%for(Semestre semestre : listaSemestres){%>
-                        <option style="background-color: rgba(218,227,189,0.8); color: #000000;" value="<%=semestre.getIdSemestre()%>"><%=semestre.getNombre()%></option>
+                        <option style="background-color: rgba(218,227,189,0.8); color: #000000;" value="<%=semestre.getIdSemestre()%>" <%if(idSemestreSeleccionado==semestre.getIdSemestre()){%>selected<%}%>><%=semestre.getNombre()%></option>
                         <%}%>
                     </select>
+                    <button class="btn btn-secondary">Aplicar filtro</button>
                 </form>
                 <%}%>
             </div>
@@ -286,6 +290,10 @@
     <%if(request.getSession().getAttribute("edicionExitosa")!=null){%>
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("edicionExitosa")%></div></div>
         <%request.getSession().removeAttribute("edicionExitosa");%>
+    <%}%>
+    <%if(request.getSession().getAttribute("datosRepetidos")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("datosRepetidos")%></div></div>
+        <%request.getSession().removeAttribute("datosRepetidos");%>
     <%}%>
     <%if(request.getSession().getAttribute("errorEdicion")!=null){%>
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorEdicion")%></div></div>
@@ -332,7 +340,7 @@
                 <form method="post" action="<%=request.getContextPath()%>/EvaluacionesServlet?action=borrar">
                     <input type="hidden" name="idEvaluacion" value="<%=ev.getIdEvaluaciones()%>">
                     <input type="hidden" name="idSemestre" value="<%=ev.getSemestre().getIdSemestre()%>">
-                    <button class="btn btn-secondary" <%if(!(new DaoSemestre().semestreHabilitado(ev.getSemestre().getIdSemestre()))){%>disabled<%}%>>Borrar</button>
+                    <button type="submit" class="btn btn-secondary" <%if(!(new DaoSemestre().semestreHabilitado(ev.getSemestre().getIdSemestre()))){%>disabled<%}%>>Borrar</button>
                 </form>
             </td>
         </tr>
@@ -437,7 +445,7 @@
                         <br>
                         <div class="row">
                             <div class="col">
-                                <input type="hidden" name="idEvaluacion value="<%=listaEvaluaciones.get(i).getIdEvaluaciones()%>">
+                                <input type="hidden" name="idEvaluacion" value="<%=listaEvaluaciones.get(i).getIdEvaluaciones()%>">
                                 <label for="nombreEditarAlumno<%=i%>" style="margin-top: 25px;color: #000000"><b>Nombre del alumno:</b></label>
                                 <input style="margin-top: 15px" type="text" name="nombreEditarAlumno" id="nombreEditarAlumno<%=i%>" placeholder="Nombre" value="<%=listaEvaluaciones.get(i).getNombreEstudiantes()%>" required>
                             </div>

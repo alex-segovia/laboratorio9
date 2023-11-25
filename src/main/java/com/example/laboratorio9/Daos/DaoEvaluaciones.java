@@ -133,4 +133,21 @@ public class DaoEvaluaciones extends DaoBase{
             throw new RuntimeException(e);
         }
     }
+
+    public boolean verificarDatosRepetidos(String nombre, String correo, String codigo, int nota, int idEvaluacion){
+        String sql = "select idevaluacion from evaluacion where nombre_estudiante=? and correo_estudiante=? and codigo_estudiante=? and nota=? and idevaluacion=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombre);
+            pstmt.setString(2,correo);
+            pstmt.setString(3,codigo);
+            pstmt.setInt(4,nota);
+            pstmt.setInt(5,idEvaluacion);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

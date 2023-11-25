@@ -95,6 +95,20 @@ public class DaoCurso extends DaoBase{
         }
     }
 
+    public boolean verificarDatosRepetidos(String nombre, int idCurso){
+        String sql = "select idcurso from curso where nombre=? and idcurso=?";
+        try(Connection conn = getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,nombre);
+            pstmt.setInt(2,idCurso);
+            try(ResultSet rs = pstmt.executeQuery()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public int obtenerIdCursoPorDocente(int idDocente){
         String sql = "select c.idcurso from curso c " +
                 "inner join curso_has_docente cd on c.idcurso = cd.idcurso " +

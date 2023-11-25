@@ -102,8 +102,12 @@ public class CursoServlet extends HttpServlet {
 
                 if (edicionValida) {
                     int idCurso = Integer.parseInt(request.getParameter("idCurso"));
-                    daoCurso.actualizarCurso(idCurso,nombreCurso);
-                    request.getSession().setAttribute("edicionExitosa","El curso se editó exitosamente.");
+                    if(!daoCurso.verificarDatosRepetidos(nombreCurso,idCurso)){
+                        daoCurso.actualizarCurso(idCurso,nombreCurso);
+                        request.getSession().setAttribute("edicionExitosa","El curso se editó exitosamente.");
+                    }else{
+                        request.getSession().setAttribute("datosRepetidos","Ingresó datos repetidos. No se realizó ninguna edición.");
+                    }
                 }else{
                     request.getSession().setAttribute("errorEdicion","Ingrese los datos correctamente. El nombre no debe ser mayor a 45 caracteres y el curso debe estar registrado en la base de datos.");
                 }

@@ -265,6 +265,10 @@
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("edicionExitosa")%></div></div>
         <%request.getSession().removeAttribute("edicionExitosa");%>
     <%}%>
+    <%if(request.getSession().getAttribute("datosRepetidos")!=null){%>
+        <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("datosRepetidos")%></div></div>
+        <%request.getSession().removeAttribute("datosRepetidos");%>
+    <%}%>
     <%if(request.getSession().getAttribute("errorEdicion")!=null){%>
         <div><div class="alert alert-success" role="alert"><%=request.getSession().getAttribute("errorEdicion")%></div></div>
         <%request.getSession().removeAttribute("errorEdicion");%>
@@ -303,9 +307,9 @@
             <td class="py-3 text-center"><%=c.getFechaEdicion()==null?"No se ha editado nunca":c.getFechaEdicion()%></td>
             <td class="py-3 text-center"><button class="btn btn-secondary" id="mostrarPopupEditar<%=listaCursos.indexOf(c)%>">Editar</button></td>
             <td class="py-3 text-center">
-                <form method="post" action="<%=request.getContextPath()%>/CursoServlet">
+                <form method="post" action="<%=request.getContextPath()%>/CursoServlet?action=borrar">
                     <input type="hidden" name="idCurso" value="<%=c.getIdCurso()%>">
-                    <button class="btn btn-secondary" <%if(new DaoCurso().cursoConEvaluaciones(c.getIdCurso())){%>disabled<%}%>>Borrar</button>
+                    <button type="submit" class="btn btn-secondary" <%if(new DaoCurso().cursoConEvaluaciones(c.getIdCurso())){%>disabled<%}%>>Borrar</button>
                 </form>
             </td>
         </tr>
