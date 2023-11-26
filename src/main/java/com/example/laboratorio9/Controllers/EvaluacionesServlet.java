@@ -155,6 +155,9 @@ public class EvaluacionesServlet extends HttpServlet {
                         if (nota < 0) {
                             edicionValida = false;
                         }
+                        if(nota > 20){
+                            edicionValida=false;
+                        }
                         if (!daoEvaluaciones.idExiste(idEvaluacion)) {
                             edicionValida = false;
                         }

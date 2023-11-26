@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DaoBase {
+public abstract class DaoBase {
     public Connection getConnection() throws SQLException {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -18,5 +18,6 @@ public class DaoBase {
         String url = "jdbc:mysql://localhost:3306/"+database;
 
         return DriverManager.getConnection(url,username,password);
+        //return DriverManager.getConnection("jdbc:mysql://34.176.190.19:3306/"+database,username,"T2hHs4}SEU>k-c&i");
     }
 }

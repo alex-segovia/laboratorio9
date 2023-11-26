@@ -93,7 +93,7 @@ public class DocenteServlet extends HttpServlet {
                 if (edicionValida) {
                     int idDocente = Integer.parseInt(request.getParameter("idDocente"));
 
-                    if(daoUsuario.verificarDatosRepetidos(nombreDocente,idDocente)){
+                    if(!daoUsuario.verificarDatosRepetidos(nombreDocente,idDocente)){
                         daoUsuario.actualizarNombreDocente(idDocente, nombreDocente);
                         request.getSession().setAttribute("edicionExitosa","El docente se editó exitosamente.");
                     }else{
