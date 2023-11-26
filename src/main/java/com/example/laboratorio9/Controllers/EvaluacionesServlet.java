@@ -18,42 +18,48 @@ public class EvaluacionesServlet extends HttpServlet {
         response.setContentType("text/html");
         if(request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            DaoEvaluaciones daoEvaluaciones = new DaoEvaluaciones();
-            DaoUsuario daoUsuario = new DaoUsuario();
-            DaoSemestre daoSemestre = new DaoSemestre();
-            String action = request.getParameter("action")==null?"default":request.getParameter("action");
-            switch (action){
-                case "default":
-                    request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
-                    break;
-                case "filtro":
-                    String idSemestreStr = request.getParameter("idsemestre");
+            if(usuario.getRol().getNombre().equals("Docente")){
+                DaoEvaluaciones daoEvaluaciones = new DaoEvaluaciones();
+                DaoUsuario daoUsuario = new DaoUsuario();
+                DaoSemestre daoSemestre = new DaoSemestre();
+                String action = request.getParameter("action")==null?"default":request.getParameter("action");
+                switch (action){
+                    case "default":
+                        request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
+                        break;
+                    case "filtro":
+                        String idSemestreStr = request.getParameter("idsemestre");
 
-                    boolean validacion=true;
-                    if(idSemestreStr==null){
-                        validacion=false;
-                    }else{
-                        try{
-                            int idSemestre = Integer.parseInt(request.getParameter("idsemestre"));
-                            if(!daoSemestre.idExiste(idSemestre)){
+                        boolean validacion=true;
+                        if(idSemestreStr==null){
+                            validacion=false;
+                        }else{
+                            try{
+                                int idSemestre = Integer.parseInt(request.getParameter("idsemestre"));
+                                if(!daoSemestre.idExiste(idSemestre)){
+                                    validacion=false;
+                                }
+                            }catch (NumberFormatException ex){
                                 validacion=false;
                             }
-                        }catch (NumberFormatException ex){
-                            validacion=false;
                         }
-                    }
 
-                    if(validacion){
-                        request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluacionesPorSemestre(usuario.getIdUsuario(),Integer.parseInt(request.getParameter("idsemestre"))));
-                        request.setAttribute("semestreSeleccionado",Integer.parseInt(idSemestreStr));
-                    }else{
-                        request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
-                    }
-                    break;
+                        if(validacion){
+                            request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluacionesPorSemestre(usuario.getIdUsuario(),Integer.parseInt(request.getParameter("idsemestre"))));
+                            request.setAttribute("semestreSeleccionado",Integer.parseInt(idSemestreStr));
+                        }else{
+                            request.setAttribute("listaEvaluaciones",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
+                        }
+                        break;
+                }
+                request.setAttribute("listaEvaluacionesTotal",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
+                request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
+                request.getRequestDispatcher("menuEvaluaciones.jsp").forward(request,response);
+            }else if(usuario.getRol().getNombre().equals("Decano")){
+                response.sendRedirect(request.getContextPath()+"/CursoServlet");
+            }else{
+                response.sendRedirect(request.getContextPath());
             }
-            request.setAttribute("listaEvaluacionesTotal",daoEvaluaciones.listarEvaluaciones(usuario.getIdUsuario()));
-            request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
-            request.getRequestDispatcher("menuEvaluaciones.jsp").forward(request,response);
         }else{
             response.sendRedirect(request.getContextPath());
         }

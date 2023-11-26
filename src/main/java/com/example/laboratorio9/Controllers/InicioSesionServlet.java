@@ -21,6 +21,9 @@ public class InicioSesionServlet extends HttpServlet {
                         response.sendRedirect(request.getContextPath()+"/CursoServlet");
                     }else if(((Usuario)request.getSession().getAttribute("usuario")).getRol().getNombre().equals("Docente")){
                         response.sendRedirect(request.getContextPath()+"/EvaluacionesServlet");
+                    }else{
+                        request.setAttribute("rol",((Usuario)request.getSession().getAttribute("usuario")).getRol().getNombre());
+                        request.getRequestDispatcher("vistaError.jsp").forward(request, response);
                     }
                 }else{
                     request.getRequestDispatcher("inicioSesion.jsp").forward(request, response);

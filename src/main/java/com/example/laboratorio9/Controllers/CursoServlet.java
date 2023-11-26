@@ -17,12 +17,18 @@ public class CursoServlet extends HttpServlet {
         response.setContentType("text/html");
         if(request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            DaoCurso daoCurso = new DaoCurso();
-            DaoUsuario daoUsuario = new DaoUsuario();
-            request.setAttribute("listaCursos",daoCurso.listarCurso(usuario.getIdUsuario()));
-            request.setAttribute("listaDocentesSinCurso",daoUsuario.listarDocentesSinCurso());
-            request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
-            request.getRequestDispatcher("menuCursos.jsp").forward(request,response);
+            if(usuario.getRol().getNombre().equals("Decano")){
+                DaoCurso daoCurso = new DaoCurso();
+                DaoUsuario daoUsuario = new DaoUsuario();
+                request.setAttribute("listaCursos",daoCurso.listarCurso(usuario.getIdUsuario()));
+                request.setAttribute("listaDocentesSinCurso",daoUsuario.listarDocentesSinCurso());
+                request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
+                request.getRequestDispatcher("menuCursos.jsp").forward(request,response);
+            }else if(usuario.getRol().getNombre().equals("Docente")){
+                response.sendRedirect(request.getContextPath()+"/EvaluacionesServlet");
+            }else{
+                response.sendRedirect(request.getContextPath());
+            }
         }else{
             response.sendRedirect(request.getContextPath());
         }

@@ -16,10 +16,16 @@ public class DocenteServlet extends HttpServlet {
         response.setContentType("text/html");
         if(request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            DaoUsuario daoUsuario = new DaoUsuario();
-            request.setAttribute("listaDocentes",daoUsuario.listarDocentes(usuario.getIdUsuario()));
-            request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
-            request.getRequestDispatcher("menuDocentes.jsp").forward(request,response);
+            if(usuario.getRol().getNombre().equals("Decano")){
+                DaoUsuario daoUsuario = new DaoUsuario();
+                request.setAttribute("listaDocentes",daoUsuario.listarDocentes(usuario.getIdUsuario()));
+                request.getSession().setAttribute("usuario",daoUsuario.obtenerUsuarioPorId(usuario.getIdUsuario()));
+                request.getRequestDispatcher("menuDocentes.jsp").forward(request,response);
+            }else if(usuario.getRol().getNombre().equals("Docente")){
+                response.sendRedirect(request.getContextPath()+"/EvaluacionesServlet");
+            }else{
+                response.sendRedirect(request.getContextPath());
+            }
         }else{
             response.sendRedirect(request.getContextPath());
         }
