@@ -284,7 +284,7 @@
 
     <table class="table table-striped align-middle caption-top mt-3">
         <%if(!listaCursos.isEmpty()){%>
-        <thead>
+        <tbody>
         <tr class="table-secondary" style="border: 1px solid black;">
             <th class="py-3 text-center">Nombre</th>
             <th class="py-3 text-center">Código</th>
@@ -295,7 +295,7 @@
             <th class="py-3 text-center">Editar</th>
             <th class="py-3 text-center">Borrar</th>
         </tr>
-        </thead>
+        </tbody>
         <tbody>
         <%for(Curso c : listaCursos){%>
         <tr style="border: 1px solid black;">

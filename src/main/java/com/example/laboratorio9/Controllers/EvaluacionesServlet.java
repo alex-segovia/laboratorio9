@@ -104,6 +104,9 @@ public class EvaluacionesServlet extends HttpServlet {
                         if (nota < 0) {
                             evaluacionValida = false;
                         }
+                        if (nota > 20) {
+                            evaluacionValida = false;
+                        }
                     } catch (NumberFormatException ex) {
                         evaluacionValida = false;
                     }
@@ -113,7 +116,7 @@ public class EvaluacionesServlet extends HttpServlet {
                     daoEvaluaciones.crearEvaluacion(nombre,correo,codigo,Integer.parseInt(notaStr),daoCurso.obtenerIdCursoPorDocente(usuario.getIdUsuario()),daoSemestre.obtenerIdSemestreHabilitadoPorAdministradorPorIdDocente(usuario.getIdUsuario()));
                     request.getSession().setAttribute("creacionExitosa","La evaluación se registró exitosamente.");
                 }else{
-                    request.getSession().setAttribute("errorCreacion","Ingrese los datos correctamente. El nombre, el correo y el código del estudiante no deben tener más de 45 caracteres. Además, la nota debe ser un número entero.");
+                    request.getSession().setAttribute("errorCreacion","Ingrese los datos correctamente. El nombre, el correo y el código del estudiante no deben tener más de 45 caracteres. Además, la nota debe ser un número entero entre 0 y 20.");
                 }
                 response.sendRedirect(request.getContextPath() + "/EvaluacionesServlet");
                 break;
@@ -175,7 +178,7 @@ public class EvaluacionesServlet extends HttpServlet {
                         request.getSession().setAttribute("datosRepetidos","Ingresó datos repetidos. No se realizó ninguna edición.");
                     }
                 }else{
-                    request.getSession().setAttribute("errorEdicion","Ingrese los datos correctamente. El nombre, el correo y el código del estudiante no deben tener más de 45 caracteres. Además, la nota debe ser un número entero y la evaluación debe estar registrada en base de datos.");
+                    request.getSession().setAttribute("errorEdicion","Ingrese los datos correctamente. El nombre, el correo y el código del estudiante no deben tener más de 45 caracteres. Además, la nota debe ser un número entero entre 0 y 20 y la evaluación debe estar registrada en base de datos.");
                 }
                 response.sendRedirect(request.getContextPath() + "/EvaluacionesServlet");
                 break;
